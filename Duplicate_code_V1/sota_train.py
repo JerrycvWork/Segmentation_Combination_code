@@ -14,15 +14,15 @@ import torchvision.transforms as standard_transforms
 import numpy as np
 import glob
 
-from data_loader import Rescale
-from data_loader import RescaleT
-from data_loader import RandomCrop
-from data_loader import CenterCrop
-from data_loader import ToTensor
-from data_loader import ToTensorLab
-from data_loader import SalObjDataset
+from chaindata_loader import Rescale
+from chaindata_loader import RescaleT
+from chaindata_loader import RandomCrop
+from chaindata_loader import CenterCrop
+from chaindata_loader import ToTensor
+from chaindata_loader import ToTensorLab
+from chaindata_loader import SalObjDataset
 
-
+from model.network_compareSOTA.r2u_net import AttU_Net
 
 import pytorch_ssim
 import pytorch_iou
@@ -48,8 +48,10 @@ def muti_bce_loss_fusion(d0, d1, d2, labels_v):
 	loss0 = bce_ssim_loss(d0,labels_v)
 	loss1 = bce_ssim_loss(d1,labels_v)
 	loss2 = bce_ssim_loss(d2,labels_v)
-     
+	#ssim0 = 1 - ssim_loss(d0,labels_v)
 
+	# iou0 = iou_loss(d0,labels_v)
+	#loss = torch.pow(torch.mean(torch.abs(labels_v-d0)),2)*(5.0*loss0 + loss1 + loss2 + loss3 + loss4 + loss5) #+ 5.0*lossa
 	loss = loss0 + loss1*0.1 + loss2*0.3
 	print("l0: %3f, l1: %3f, l2: %3f\n"%(loss0.data,loss1.data,loss2.data))
 	# print("BCE: l1:%3f, l2:%3f, l3:%3f, l4:%3f, l5:%3f, la:%3f, all:%3f\n"%(loss1.data[0],loss2.data[0],loss3.data[0],loss4.data[0],loss5.data[0],lossa.data[0],loss.data[0]))
@@ -57,27 +59,7 @@ def muti_bce_loss_fusion(d0, d1, d2, labels_v):
 	return loss0, loss
 
 
-# ------- 2. Set the arguments --------
 
-
-
-import argparse
-
-parser = argparse.ArgumentParser(description='Net Define')
-parser.add_argument('--net', type=str, default="")
-parser.add_argument('--model_dir', type=str, default="")
-parser.add_argument('--data_dir', type=str, default="/home/htihe/MDPI/Data/Mosmed/Set/train/")
-parser.add_argument('--tra_image_dir', type=str, default="image/")
-parser.add_argument('--tra_label_dir', type=str, default="lung_mask/")
-
-## Training Parameters 
-parser.add_argument('--optimizer', type=str, default="AdamW")
-parser.add_argument('--lr', type=float, default=0.0002)
-parser.add_argument('--epoch', type=int, default=100)
-parser.add_argument('--batch_size', type=int, default=4)
-
-
-args = parser.parse_args()
 
 
 
@@ -85,20 +67,34 @@ args = parser.parse_args()
 
 # ------- 2. set the directory of training dataset --------
 
+#data_dir = '/home/htihe/MDPI/Data/Task4/MDPI_Data/Training_set/Set2_Filter_Lung_mask/'
+#tra_image_dir = 'Images/'
+#tra_label_dir = 'Lung_mask/'
+#tra_label2_dir = 'Infection_mask/'
 
-data_dir = args.data_dir
-tra_image_dir = args.tra_image_dir
-tra_label_dir = args.tra_label_dir
+
+data_dir = '/home/htihe/MDPI/Data/Mosmed/Set/train/'
+tra_image_dir = 'image/'
+tra_label_dir = 'lung_mask/'
+tra_label2_dir = 'infection_mask/'
 
 image_ext = '.png'
 label_ext = '.png'
 
-epoch_num = args.epoch
-batch_size_train = args.batch_size
+
+
+
+
+epoch_num = 100
+batch_size_train = 4
+batch_size_val = 1
+train_num = 0
+val_num = 0
 
 tra_img_name_list = glob.glob(data_dir + tra_image_dir + '*' + image_ext)
 
 tra_lbl_name_list = []
+tra_lbl2_name_list = []
 for img_path in tra_img_name_list:
 	img_name = img_path.split("/")[-1]
 
@@ -110,17 +106,29 @@ for img_path in tra_img_name_list:
 
 	tra_lbl_name_list.append(data_dir + tra_label_dir + imidx + label_ext)
 
+for img_path in tra_img_name_list:
+	img_name = img_path.split("/")[-1]
+
+	aaa = img_name.split(".")
+	bbb = aaa[0:-1]
+	imidx = bbb[0]
+	for i in range(1,len(bbb)):
+		imidx = imidx + "." + bbb[i]
+
+	tra_lbl2_name_list.append(data_dir + tra_label2_dir + imidx + label_ext)
 
 print("---")
 print("train images: ", len(tra_img_name_list))
-print("train labels: ", len(tra_lbl_name_list))
+print("train lung labels: ", len(tra_lbl_name_list))
+print("train infection labels: ", len(tra_lbl2_name_list))
 print("---")
 
 train_num = len(tra_img_name_list)
 
 salobj_dataset = SalObjDataset(
     img_name_list=tra_img_name_list,
-    lbl_name_list=tra_lbl_name_list,
+    lbl_name_list_lung=tra_lbl_name_list,
+    lbl_name_list_infection=tra_lbl2_name_list,
     transform=transforms.Compose([
         RescaleT(256),
         ToTensorLab(flag=0)]))
@@ -140,6 +148,9 @@ def net_define(net_str):
     if net_str=="attunet":
         from model.network_compareSOTA.r2u_net import AttU_Net
         return AttU_Net()
+    if net_str=="rplfunet":
+        from model.network_compareSOTA.RPLFUnet import RPLFUnet
+        return RPLFUnet()
     if net_str=="rplfunet":
         from model.network_compareSOTA.RPLFUnet import RPLFUnet
         return RPLFUnet()
@@ -170,6 +181,7 @@ def net_define(net_str):
                       drop_rate=0., attn_drop_rate=0., drop_path_rate=0.1,
                       norm_layer=nn.LayerNorm, ape=False, patch_norm=True,
                       use_checkpoint=False, final_upsample="Dual up-sample")  # .cuda()
+        net.load_state_dict(torch.load(r"/home/htihe/MDPI/code/Final_Integration/ckpt/Data_ver1/SwinUNet/itr_180000_train_0.127175_tar_0.127175.pth"))
         return net
     if net_str=="cenet":
         from model.network_compareSOTA.cenet import CE_Net_
@@ -180,6 +192,7 @@ def net_define(net_str):
     if net_str=="cosupervision":
         from model.network_compareSOTA.co_supervision import RPLFUnet
         return RPLFUnet()
+
     if net_str=="segformer":
         from model.General_network.segformer import Segformer
         return Segformer()
@@ -194,30 +207,21 @@ def net_define(net_str):
     if net_str=="deeplabv3":
         from model.General_network.deeplabv3 import DeepLab
         return DeepLab()
-    
-    ## Attention Network
 
-    if net_str=="MS_guide_attemtion":
-        from model.Attention_Mechanism.Network_Attention.MS_guide_attention import DAF_stack
-        return DAF_stack()
-    if net_str=="pranet":
-        from model.Attention_Mechanism.Network_Attention.Pra_attention import PraNet
-        return PraNet()
-    if net_str == "pyramid":
-        from model.Attention_Mechanism.Network_Attention.Pytamid_Attention import ResNet50, Classifier, PAN, \
-            Mask_Classifier,Seg_total
-        return Seg_total()
+
+import argparse
+
+parser = argparse.ArgumentParser(description='Net Define')
+parser.add_argument('--net', type=str)
+parser.add_argument('--model_dir', type=str)
+
+args = parser.parse_args()
+
 
 
 net = net_define(args.net)
-
-try:
-   net.load_state_dict(torch.load(args.model_dir))
-   print("Checkpoint Loaded:",args.model_dir)
-except:
-   print("No Checkpoint Loaded.") 
-
-model_dir = "ckpt/"+args.net+'/'
+net.load_state_dict(torch.load(args.model_dir))
+model_dir = "/home/htihe/MDPI/code/Final_Integration/ckpt/mosmed_transfer/"+args.net+'/'
 if os.path.exists(model_dir)<=0:
     os.makedirs(model_dir)
 if torch.cuda.is_available():
@@ -225,13 +229,8 @@ if torch.cuda.is_available():
 
 # ------- 4. define optimizer --------
 print("---define optimizer...")
-
-if args.optimizer=="Adam":
-    optimizer = optim.Adam(net.parameters(), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=0)
-elif args.optimizer=="AdamW":
-    optimizer=optim.AdamW(net.parameters(), lr=args.lr, betas=(0.9, 0.999), weight_decay=0)
-else:
-    optimizer=optim.SGD(net.parameters(),lr=args.lr)
+#optimizer = optim.Adam(net.parameters(), lr=0.001, betas=(0.9, 0.999), eps=1e-08, weight_decay=0)
+optimizer=optim.AdamW(net.parameters(), lr=0.0002, betas=(0.9, 0.999), weight_decay=0)
 # ------- 5. training process --------
 print("---start training...")
 ite_num = 0

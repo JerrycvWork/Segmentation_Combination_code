@@ -246,9 +246,6 @@ class ToTensorLab(object):
 
 class SalObjDataset(Dataset):
 	def __init__(self,img_name_list,lbl_name_list,transform=None):
-		# self.root_dir = root_dir
-		# self.image_name_list = glob.glob(image_dir+'*.png')
-		# self.label_name_list = glob.glob(label_dir+'*.png')
 		self.image_name_list = img_name_list
 		self.label_name_list = lbl_name_list
 		self.transform = transform
@@ -259,7 +256,7 @@ class SalObjDataset(Dataset):
 	def __getitem__(self,idx):
 
 		#image = Image.open(self.image_name_list[idx])
-		# label = Image.open(self.label_name_list[idx])#io.imread(self.label_name_list[idx])
+		#label = Image.open(self.label_name_list[idx])#io.imread(self.label_name_list[idx])
 
 		#print(self.image_name_list[idx])
 
@@ -269,10 +266,6 @@ class SalObjDataset(Dataset):
 			label_3 = np.zeros(image.shape)
 		else:
 			label_3 = io.imread(self.label_name_list[idx])
-
-		#print("len of label3")
-		#print(len(label_3.shape))
-		#print(label_3.shape)
 
 		label = np.zeros(label_3.shape[0:2])
 		if(3==len(label_3.shape)):
@@ -285,15 +278,6 @@ class SalObjDataset(Dataset):
 		elif(2==len(image.shape) and 2==len(label.shape)):
 			image = image[:,:,np.newaxis]
 			label = label[:,:,np.newaxis]
-
-		# #vertical flipping
-		# # fliph = np.random.randn(1)
-		# flipv = np.random.randn(1)
-		#
-		# if flipv>0:
-		# 	image = image[::-1,:,:]
-		# 	label = label[::-1,:,:]
-		# #vertical flip
 
 		sample = {'image':image, 'label':label}
 
