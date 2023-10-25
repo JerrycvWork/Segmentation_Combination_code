@@ -34,20 +34,26 @@ Pass
 
 #### 2.1.1 Overview
 
-The datasets provided in paper could be downloaded at [Zenodo](https://zenodo.org/records/3757476#.Xp0FhB9fgUE) and [figshare](https://figshare.com/articles/dataset/MedSeg_Covid_Dataset_1/13521488). The [Zenodo](https://zenodo.org/records/3757476#.Xp0FhB9fgUE) dataset is the training set while 
+The datasets provided in paper could be downloaded at [Zenodo](https://zenodo.org/records/3757476#.Xp0FhB9fgUE) and [figshare](https://figshare.com/articles/dataset/MedSeg_Covid_Dataset_1/13521488). The [Zenodo](https://zenodo.org/records/3757476#.Xp0FhB9fgUE) dataset is the training set while [figshare](https://figshare.com/articles/dataset/MedSeg_Covid_Dataset_1/13521488) dataset is the testing set.
 
 After unzipping the data, it would be three parts of the data: images, infection masks, lung masks.
 
 Then, place the data in the format below:
 
 Train
+
 --- images
+
 --- infection masks
+
 --- lung masks
 
 Test
+
 --- images
+
 --- infection masks
+
 --- lung masks
 
 
