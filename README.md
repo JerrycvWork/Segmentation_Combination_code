@@ -14,7 +14,8 @@
   - [2. Proposed Methods](#)
     - [2.1. Co-ERA-Net](#)
       - [2.1.1 Overview](#)
-      - [2.1.2. Usage](#)
+      - [2.1.2 Data Preparation](#)
+      - [2.1.3 Usage](#)
     - [2.2. Others](#)
       - [2.2.1. Overview](#)
       - [2.2.2. Usage](#)
@@ -33,6 +34,10 @@ Pass
 ### 2.1. Co-ERA-Net
 
 #### 2.1.1 Overview
+
+Pass
+
+#### 2.1.2 Data Preparation
 
 The datasets provided in paper could be downloaded at [Zenodo](https://zenodo.org/records/3757476#.Xp0FhB9fgUE) and [figshare](https://figshare.com/articles/dataset/MedSeg_Covid_Dataset_1/13521488). The [Zenodo](https://zenodo.org/records/3757476#.Xp0FhB9fgUE) dataset is the training set while [figshare](https://figshare.com/articles/dataset/MedSeg_Covid_Dataset_1/13521488) dataset is the testing set.
 
@@ -57,8 +62,11 @@ Test
 --- lung masks
 
 
+#### 2.1.3 Usage
 
-#### 2.1.1 Usage
+After preparing the data, please run the script below for training the network:
+
+`python Our_train.py --net "dualstream_v2"`
 
 
 

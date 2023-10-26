@@ -1,4 +1,4 @@
-python Our_train.py --net "dualstream_v1"
+#python Our_train.py --net "dualstream_v1"
 python Our_train.py --net "dualstream_v2"
 
 python Our_train.py --net "MS_guide_attention"
