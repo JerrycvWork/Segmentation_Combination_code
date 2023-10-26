@@ -68,7 +68,23 @@ After preparing the data, please run the script below for training the network:
 
 `python Our_train.py --net "dualstream_v2"`
 
+The parameters of the training is shown in below:
 
+```
+parser = argparse.ArgumentParser(description='Net Define')
+parser.add_argument('--net', type=str, default="")
+parser.add_argument('--model_dir', type=str, default="")
+parser.add_argument('--data_dir', type=str, default="train/")
+parser.add_argument('--tra_image_dir', type=str, default="image/")
+parser.add_argument('--tra_label_dir', type=str, default="lung_mask/")
+parser.add_argument('--tra_label2_dir', type=str, default="infection_mask/")
+parser.add_argument('--optimizer', type=str, default="AdamW")
+parser.add_argument('--lr', type=float, default=0.0002)
+parser.add_argument('--epoch', type=int, default=100)
+parser.add_argument('--batch_size', type=int, default=4)
+parser.add_argument('--image_size', type=int, default=256)
+parser.add_argument('--multi_scale_factor', type=float, default=0.1)
+```
 
 
 
