@@ -147,9 +147,11 @@ parser.add_argument('--image_size', type=int, default=256)## The size of the tes
 
 ## 3. Another Document for Beginners
 
+For the beginners which wants to learn the code, we have also made a document for the simple version of the code and the corresponding introduction of the functions and how to run the code.
 
+For more details, please check the github below:
 
-
+[beginners document](github.com)
 
 ## 4. Citation
 
