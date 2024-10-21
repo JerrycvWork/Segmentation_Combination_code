@@ -62,7 +62,7 @@ import argparse
 parser = argparse.ArgumentParser(description='Net Define')
 parser.add_argument('--net', type=str, default="")
 parser.add_argument('--model_dir', type=str, default="")
-parser.add_argument('--data_dir', type=str, default="train/")
+parser.add_argument('--data_dir', type=str, default="Sample_Dataset/Train/")
 parser.add_argument('--tra_image_dir', type=str, default="image/")
 parser.add_argument('--tra_label_dir', type=str, default="lung_mask/")
 parser.add_argument('--tra_label2_dir', type=str, default="infection_mask/")

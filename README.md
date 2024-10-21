@@ -19,8 +19,7 @@
     - [2.2. Others](#)
       - [2.2.1. Overview](#)
       - [2.2.2. Usage](#)
-  - [3. Another Document for Beginners](#)
-  - [4. Citation](#)
+  - [3. Citation](#)
 
 
 ## 1. Introduction
@@ -60,6 +59,8 @@ Test
 --- infection_mask
 
 --- lung_mask
+
+Moreover, for the testing environment propose, we also provide the sample dataset in the github. Please also consider to utilize it.
 
 
 #### 2.1.3 Usage
@@ -144,14 +145,6 @@ parser.add_argument('--model_dir', type=str)## The path of the checkpoint
 parser.add_argument('--image_dir', type=str,default="test/image/")## The path of the testing images
 parser.add_argument('--image_size', type=int, default=256)## The size of the testing iamges. Please note that it should be matched with the checkpoints.
 ```
-
-## 3. Another Document for Beginners
-
-For the beginners which wants to learn the code, we have also made a document for the simple version of the code and the corresponding introduction of the functions and how to run the code.
-
-For more details, please check the github below:
-
-[beginners document](github.com)
 
 ## 4. Citation
 

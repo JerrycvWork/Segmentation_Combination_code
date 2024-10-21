@@ -123,7 +123,7 @@ if __name__ == '__main__':
     parser.add_argument('--net', type=str)
     parser.add_argument('--pred_dir', type=str)
     parser.add_argument('--model_dir', type=str)
-    parser.add_argument('--image_dir', type=str,default="test/image/")
+    parser.add_argument('--image_dir', type=str,default="Sample_Dataset/Test/image/image/")
     
     ## Testing Parameters
     parser.add_argument('--image_size', type=int, default=256)
