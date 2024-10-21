@@ -89,7 +89,7 @@ parser.add_argument('--multi_scale_factor', type=float, default=0.1)## The weigh
 
 After the training is finished, please run the script below for testing the network:
 
-`python Our_test.py --net "dualstream_v2" --pred_dir "dualstream_v2/" --model_dir "dualstream_v2/train.pth"`
+`python Our_test.py --net "dualstream_v2" --pred_dir "dualstream_v2/" --model_dir (Fill the Checkpoint Path)`
 
 The parameters of the testing is shown in below:
 
@@ -134,7 +134,7 @@ parser.add_argument('--image_size', type=int, default=256)
 
 After the training is finished, please run the script below for testing the network:
 
-`python sota_test.py --net "attunet" --pred_dir "attunet/" --model_dir "attunet/train_0.415608_tar_0.415608.pth"`
+`python sota_test.py --net "attunet" --pred_dir "attunet/" --model_dir (Fill the Checkpoint Path)`
 
 The parameters of the testing is shown in below:
 
